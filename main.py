@@ -216,13 +216,20 @@ def DeleteObjects(deletedict, action, operation, sid):
     elif WorkToBeDone is False:
         print('Nothing to do for object type', action, 'exit.')
 
+def GetTotals(listdict):
+    for dict in listdict:
+        if dict['total']:
+            return str(dict['total'])
 
 def RunTheCleanUp(loops):
     OutPutVals = {}
     HowManyLoops = loops + 1
     for i in range(0,int(HowManyLoops)):
+        print('Connecting to..', str(MDSCMAIP), 'and port..', str(HTTPSPORT))
         CurSID = APILoginv2('DPC Cleanup Script')
         OutPutVals = GetNewVals('show-unused-objects', CurSID)
+        Total = GetTotals(OutPutVals)
+        print('Total number of objects found..', str(Total))
         DeleteObjects(OutPutVals, 'host', 'delete-host', CurSID)
         DeleteObjects(OutPutVals, 'network', 'delete-network', CurSID)
         DeleteObjects(OutPutVals, 'service-tcp', 'delete-service-tcp', CurSID)
